@@ -1,0 +1,936 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  10pt,
+  ignorenonframetext,
+]{beamer}
+\title{Probability, Likelihood, and Other Measures of Model Fit}
+\author{Mark Andrews\\
+Psychology Department, Nottingham Trent University\\
+\strut \\
+\texttt{mark.andrews@ntu.ac.uk}}
+\date{}
+
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usefonttheme{serif}
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Probability, Likelihood, and Other Measures of Model Fit},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\newif\ifbibliography
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\RequirePackage{pifont,manfnt}
+\RequirePackage{booktabs}
+\usepackage{subcaption}
+\RequirePackage[T1]{fontenc}
+\RequirePackage{mathpazo}
+\RequirePackage{eulervm}
+\linespread{1.05}
+\RequirePackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{arrows,positioning,matrix} 
+\RequirePackage{xspace}
+\RequirePackage{apacite}
+\RequirePackage{rotating}
+\RequirePackage{multirow}
+\usepackage{fontawesome}
+\usepackage{nth}
+\pgfplotsset{compat=1.16}
+\newcommand{\Prob}[1]{\mathrm{P}( #1 )}
+\newcommand{\dcat}[1]{\mathrm{dcat}( #1 )}
+\newcommand{\ddirichlet}[1]{\mathrm{ddirichlet}( #1 )}
+\newcommand*{\given}{\vert}
+\newcommand{\hdpmm}{\textsc{hdptm}\xspace}
+\newcommand{\bnc}{\textsc{bnc}\xspace}
+\newcommand{\brms}{Brms\xspace}
+\newcommand{\mcmc}{\textsc{mcmc}\xspace}
+\newcommand{\icc}{\textsc{icc}\xspace}
+\newcommand{\reml}{\textsc{reml}\xspace}
+\newcommand{\mad}{\textsc{mad}\xspace}
+
+\newcommand\iidsim{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny iid}}}{\sim}}}
+\newcommand\defeq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny def}}}{=}}}
+\newcommand{\hpd}{\textsc{hpd}\xspace}
+\newcommand{\Probc}[1]{\mathrm{P}_{\text{\!\tiny \textsc{c}}}( #1 )}
+\newcommand{\Proba}[1]{\mathrm{P}_{\text{\!\tiny \textsc{a}}}( #1 )}
+\newcommand{\wnew}{w_{j}}
+\newcommand{\wjinew}{w_{ji}}
+\newcommand{\pinew}{\pi_{j}}
+\newcommand{\data}{\mathcal{D}}
+\newcommand{\dic}{\textsc{dic}\xspace}
+\newcommand{\studentt}[1]{t_{#1}}
+\setbeamerfont{title}{family=\it}
+\setbeamerfont{frametitle}{family=\it}
+
+\RequirePackage{tikz}
+\usetikzlibrary{trees}
+\usetikzlibrary{matrix}
+
+\RequirePackage{amssymb,latexsym,amsmath,amsfonts,amscd}
+
+\usecolortheme[named=gray]{structure} 
+\setbeamercolor{titlelike}{fg=black!60!red}
+\definecolor{Mygrey}{gray}{0.75}
+
+\newcommand{\rreallytiny}{\fontsize{3}{3}\selectfont}
+\newcommand{\reallytiny}{\fontsize{5}{5}\selectfont}
+
+\usetikzlibrary{decorations.pathmorphing} % noisy shapes
+\usetikzlibrary{fit}					% fitting shapes to coordinates
+\usetikzlibrary{backgrounds}	% drawing the background after the foreground
+\usetikzlibrary{matrix}
+
+\tikzstyle{background}=[rectangle, fill=none,
+						draw=black,
+                                                inner sep=0.3cm,
+                                                rounded corners=3mm]
+
+\tikzstyle{observation}=[circle,font=\small,minimum size=5mm,inner sep=0mm,
+                                    draw=black!70,
+                                    fill=black!10]
+
+\tikzstyle{state}=[circle,font=\small,minimum size=5mm,inner sep=0mm,
+                                   draw=black!70,
+                                    fill=none]
+
+\tikzstyle{limit}=[rectangle,font=\small,minimum size=0mm,inner sep=0mm,
+                                    fill=none]
+
+\tikzstyle{parameter}=[circle,font=\small,minimum size=5mm,inner sep=0mm,
+                                   draw=black!70,
+                                    fill=none]
+% tikz stuff
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usetikzlibrary{positioning,shapes,trees,arrows,shadows,arrows.meta,backgrounds,fit}
+
+\tikzset{every path/.style={-latex,thick}}
+
+\tikzset{
+  basic/.style = {font=\sffamily},
+  % material/.style  = {basic, text width=8mm, font=\footnotesize\sffamily, fill=yellow!60},
+  % revision/.style  = {material, fill=blue!30},
+  % root/.style   = {basic,  align=center, fill=pink!60},
+  level 1/.style = {basic, align=center, sibling distance = 30mm},
+  level 2/.style = {basic, sibling distance = 20mm},
+  level 3/.style = {basic, sibling distance = 15mm},
+  % level 4/.style = {level distance=10mm,basic, fill=pink!60, sibling distance = 20mm}
+}
+
+
+\graphicspath{{../images/}}
+
+\DeclareSymbolFont{legacymaths}{OT1}{cmr}{m}{n}
+\DeclareMathAccent{\dot}     {\mathalpha}{legacymaths}{95}
+\DeclareMathAccent{\bar}     {\mathalpha}{legacymaths}{22}
+\DeclareMathAccent{\tilde}     {\mathalpha}{legacymaths}{126}
+
+\setbeamertemplate{footline}[frame number]
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}[fragile]{Example problem}
+\protect\hypertarget{example-problem}{}
+\begin{itemize}
+\tightlist
+\item
+  Let's assume we have the \texttt{cars} data, which is depicted in the
+  following scatterplot:
+\end{itemize}
+
+\begin{center}\includegraphics[width=0.67\textwidth]{model_fit_files/figure-beamer/unnamed-chunk-4-1} \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Example problem}
+\protect\hypertarget{example-problem-1}{}
+\begin{itemize}
+\tightlist
+\item
+  The first 10 observations of \texttt{cars} are:
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{head}\NormalTok{(cars, }\DecValTok{10}\NormalTok{)}
+\CommentTok{\#\textgreater{}    speed dist}
+\CommentTok{\#\textgreater{} 1      4    2}
+\CommentTok{\#\textgreater{} 2      4   10}
+\CommentTok{\#\textgreater{} 3      7    4}
+\CommentTok{\#\textgreater{} 4      7   22}
+\CommentTok{\#\textgreater{} 5      8   16}
+\CommentTok{\#\textgreater{} 6      9   10}
+\CommentTok{\#\textgreater{} 7     10   18}
+\CommentTok{\#\textgreater{} 8     10   26}
+\CommentTok{\#\textgreater{} 9     10   34}
+\CommentTok{\#\textgreater{} 10    11   17}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}[fragile]{Probabilistic model}
+\protect\hypertarget{probabilistic-model}{}
+\begin{itemize}
+\item
+  A potential model of the \texttt{cars} data is the following \[
+  \begin{aligned}
+  y_i &\sim N(\mu_i, \sigma^2)\quad \text{for $i \in 1...n$},\\
+  \mu_i &= \beta_0 + \beta_1 x_i,
+  \end{aligned}
+  \] where \(y_i\) and \(x_i\) are the \texttt{dist} and \texttt{speed}
+  variables on observation \(i\).
+\item
+  In other words, we are modelling \texttt{dist} as normally distributed
+  around a mean that is a linear function of \texttt{speed}, and with a
+  fixed variance \(\sigma^2\).
+\item
+  We do not know the values of the parameters \(\beta_0\), \(\beta_1\),
+  and \(\sigma^2\).
+\item
+  Note that this is a probabilistic model of the outcome variable only.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Conditional probability of any observation}
+\protect\hypertarget{conditional-probability-of-any-observation}{}
+\begin{itemize}
+\tightlist
+\item
+  Given our model specification, we can ask what is the probability of
+  any given value of \texttt{dist}, assuming a given value of
+  \texttt{speed}, for any given values of the parameters \(\beta_0\),
+  \(\beta_1\), \(\sigma^2\).
+\item
+  For example, we can ask, what is the probability that
+  \(\texttt{dist} = 50\) if \(\texttt{speed} = 15\) if \(\beta_0\),
+  \(\beta_1\), and \(\sigma\) have the values \(-20\), \(4\), \(15\),
+  respectively, i.e.~ \[
+  \Prob{y = 50 \given x = 15, \beta_0 = -20, \beta_1 = 4, \sigma = 15},
+  \]
+\item
+  We can do this for \emph{any} values of \texttt{dist}, \texttt{speed},
+  and \(\beta_0\), \(\beta_1\), and \(\sigma\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Conditional probability of any observation}
+\protect\hypertarget{conditional-probability-of-any-observation-1}{}
+\begin{itemize}
+\item
+  If \(x = 15\), and \(\beta_0 = -20\), \(\beta_1 = 4\),
+  \(\sigma = 15\), then the value of \(y\) has been assumed to be drawn
+  from a normal distribution with mean \[
+  \begin{aligned}
+  \mu &= \beta_0 + \beta_1 x,\\
+  \mu &= -20 + 4 \times 15,\\
+  \mu &= 40
+  \end{aligned},
+  \] and a standard deviation of \(\sigma = 15\).
+\item
+  And so the probability that \(y = 50\) when \(x = 15\), and
+  \(\beta_0 = -20\), \(\beta_1 = 4\), \(\sigma = 15\), is the
+  probability of a value of \(50\) in a normally distributed random
+  variable whose mean is 40 and whose standard deviation is \(15\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Conditional probability of any observation}
+\protect\hypertarget{conditional-probability-of-any-observation-2}{}
+\begin{itemize}
+\item
+  The probability (density) that a normal random variable, with mean of
+  40 and standard deviation of 15, takes the value of 50 can be obtained
+  from this probability density function for normal distributions: \[
+  \Prob{y \given \mu, \sigma} = \frac{1}{\sqrt{2\pi\sigma^2}} \exp{\left(-\frac{|y - \mu|^2}{2\sigma^2}\right)}
+  \]
+\item
+  Using R, this is
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{y }\OtherTok{\textless{}{-}} \DecValTok{50}\NormalTok{; mu }\OtherTok{\textless{}{-}} \DecValTok{40}\NormalTok{; sigma }\OtherTok{\textless{}{-}} \DecValTok{15}
+\DecValTok{1}\SpecialCharTok{/}\FunctionTok{sqrt}\NormalTok{(}\DecValTok{2}\SpecialCharTok{*}\NormalTok{pi}\SpecialCharTok{*}\NormalTok{sigma}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{*} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{0.5} \SpecialCharTok{*}\NormalTok{ (y}\SpecialCharTok{{-}}\NormalTok{mu)}\SpecialCharTok{\^{}}\DecValTok{2}\SpecialCharTok{/}\NormalTok{sigma}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\CommentTok{\#\textgreater{} [1] 0.02129653}
+\end{Highlighting}
+\end{Shaded}
+
+or just
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{dnorm}\NormalTok{(y, }\AttributeTok{mean =}\NormalTok{ mu, }\AttributeTok{sd =}\NormalTok{ sigma)}
+\CommentTok{\#\textgreater{} [1] 0.02129653}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}[fragile]{Conditional probability of any observation}
+\protect\hypertarget{conditional-probability-of-any-observation-3}{}
+\begin{itemize}
+\tightlist
+\item
+  We can use the R function \texttt{prob\_obs\_lm} (from
+  \texttt{utils.R}) for the probability of an observation in any
+  (simple) linear regression:
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# e.g.}
+\FunctionTok{prob\_obs\_lm}\NormalTok{(}\AttributeTok{y =} \DecValTok{50}\NormalTok{, }
+            \AttributeTok{x =} \DecValTok{15}\NormalTok{, }
+            \AttributeTok{beta\_0 =} \SpecialCharTok{{-}}\DecValTok{20}\NormalTok{, }\AttributeTok{beta\_1 =} \DecValTok{4}\NormalTok{, }\AttributeTok{sigma =} \DecValTok{15}\NormalTok{)}
+\CommentTok{\#\textgreater{} [1] 0.02129653}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}[fragile]{Conditional probability of all observed data}
+\protect\hypertarget{conditional-probability-of-all-observed-data}{}
+\begin{itemize}
+\item
+  Assuming values for \(\beta_0\), \(\beta_1\), \(\sigma\), what the
+  probability of the observed values of the \texttt{dist} outcome
+  variable, \(y_1, y_2, y_3 \ldots y_n\) given the observed values of
+  the \texttt{speed} predictor, \(x_1, x_2, x_3 \ldots x_n\)?
+\item
+  This is \[
+  \Prob{y_1 \ldots y_n \given x_1\ldots x_n, \beta_0, \beta_1, \sigma}.
+  \]
+\item
+  In this model, all \(y\)'s are conditionally independent of one
+  another, given that values of \(x_1, x_2, x_3 \ldots x_n\), so the the
+  joint probability is as follows: \[
+  \Prob{y_1 \ldots y_n \given x_1\ldots x_n, \beta_0, \beta_1, \sigma} = \prod_{i=1}^n \Prob{y_i \given x_i, \beta_0, \beta_1, \sigma}.
+  \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Conditional log probability of all observed data}
+\protect\hypertarget{conditional-log-probability-of-all-observed-data}{}
+\begin{itemize}
+\tightlist
+\item
+  The joint probability \[
+  \Prob{y_1 \ldots y_n \given x_1\ldots x_n, \beta_0, \beta_1, \sigma} = \prod_{i=1}^n \Prob{y_i \given x_i, \beta_0, \beta_1, \sigma}.
+  \] will be a very small number (a product of small numbers), so we
+  usually calculate its logarithm: \[
+  \log \left(\prod_{i=1}^n \Prob{y_i \given x_i, \beta_0, \beta_1, \sigma} \right) =
+  \sum_{i=1}^n \log   \Prob{y_i \given x_i, \beta_0, \beta_1, \sigma} 
+  \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Log conditional probability of all observed data}
+\protect\hypertarget{log-conditional-probability-of-all-observed-data}{}
+\begin{itemize}
+\tightlist
+\item
+  For example, the log probability of all the \texttt{dist} values given
+  the \texttt{speed} values, and assuming certain values for
+  \(\beta_0\), \(\beta_1\), \(\sigma\) can be calculated as follows:
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{y }\OtherTok{\textless{}{-}}\NormalTok{ cars}\SpecialCharTok{$}\NormalTok{dist; x }\OtherTok{\textless{}{-}}\NormalTok{ cars}\SpecialCharTok{$}\NormalTok{speed}
+\NormalTok{beta\_0 }\OtherTok{=} \SpecialCharTok{{-}}\DecValTok{20}\NormalTok{; beta\_1 }\OtherTok{=} \DecValTok{4}\NormalTok{; sigma }\OtherTok{=} \DecValTok{15}
+\FunctionTok{prob\_obs\_lm}\NormalTok{(y, x, beta\_0, beta\_1, sigma, }\AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{sum}\NormalTok{()}
+\CommentTok{\#\textgreater{} [1] {-}206.805}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}[fragile]{Log conditional probability of all observed data}
+\protect\hypertarget{log-conditional-probability-of-all-observed-data-1}{}
+\begin{itemize}
+\item
+  The log conditional probability can \[
+  \begin{aligned}
+  \sum_{i=1}^n &\log \Prob{y_i \given x_i, \beta_0, \beta_1, \sigma} =
+  \sum_{i=1}^n \log\left( \frac{1}{\sqrt{2\pi\sigma^2}} \exp{\left(-\frac{|y_i - \mu_i|^2}{2\sigma^2}\right)} \right),\\
+  &= -\frac{n}{2} \log\left(2\pi\right) -\frac{n}{2} \log(\sigma^2) -\frac{1}{2\sigma^2} \sum_{i=1}^n |y_i - \mu_i|^2,
+  \end{aligned}
+  \] where \(\mu_i = \beta_0 + \beta_1 x_i\).
+\item
+  This is calculated by \texttt{log\_prob\_obs\_lm} (in
+  \texttt{utils.R}):
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{log\_prob\_obs\_lm}\NormalTok{(y, x, beta\_0, beta\_1, sigma)}
+\CommentTok{\#\textgreater{} [1] {-}206.805}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}{The likelihood function}
+\protect\hypertarget{the-likelihood-function}{}
+\begin{itemize}
+\item
+  The following is a function over the space of values of
+  \(y_1 \ldots y_n\): \[
+  \Prob{y_1 \ldots y_n \given x_1\ldots x_n, \beta_0, \beta_1, \sigma} = \prod_{i=1}^n \Prob{y_i \given x_i, \beta_0, \beta_1, \sigma}.
+  \]
+\item
+  In other words, \(x_1\ldots x_n\) and \(\beta_0\), \(\beta_1\), and
+  \(\sigma\) are fixed (like the parameters of a function) and
+  \(y_1 \ldots y_n\) are free variables and so
+  \(\Prob{y_1 \ldots y_n \given x_1\ldots x_n, \beta_0, \beta_1, \sigma}\)
+  is a function over the \(y_1 \ldots y_n\) space.
+\item
+  If, however, we treat \(y_1 \ldots y_n\) and \(x_1 \ldots x_n\) as
+  fixed, and treat \(\beta_0\), \(\beta_1\), and \(\sigma\) as free
+  variables, then \[
+  \mathcal{L}(\beta_0, \beta_1, \sigma \given \vec{y}, \vec{x}) = \prod_{i=1}^n \Prob{y_i \given x_i, \beta_0, \beta_1, \sigma}
+  \] defines a function over the three dimensional \(\beta_0\),
+  \(\beta_1\), \(\sigma\) space.
+\item
+  The function is known as the \emph{likelihood function}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The log likelihood function}
+\protect\hypertarget{the-log-likelihood-function}{}
+\begin{itemize}
+\tightlist
+\item
+  The log likelihood function is just the log of the likelihood
+  function.
+\item
+  In the present example, it is \[
+  \begin{aligned}
+  &\log \mathcal{L}(\beta_0, \beta_1, \sigma \given \vec{y}, \vec{x}) =\\ 
+  &-\frac{n}{2} \log\left(2\pi\right) -\frac{n}{2} \log(\sigma^2) -\frac{1}{2\sigma^2} \sum_{i=1}^n |y_i - (\beta_0 + \beta_1 x_i)|^2,
+  \end{aligned}
+  \] where \(y_1 \ldots y_n\) and \(x_1 \ldots x_n\) are assumed to be
+  fixed.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Maximum likelihood estimation}
+\protect\hypertarget{maximum-likelihood-estimation}{}
+\begin{itemize}
+\item
+  The values of \(\beta_0\), \(\beta_1\), \(\sigma\) that maximize
+  \(\mathcal{L}(\beta_0, \beta_1, \sigma \given \vec{y}, \vec{x})\) are
+  the maximum likelihood estimators of the (random variables)
+  \(\beta_0\), \(\beta_1\), \(\sigma\).
+\item
+  The values of \(\beta_0\), \(\beta_1\), \(\sigma\) that maximize
+  \(\log \mathcal{L}(\beta_0, \beta_1, \sigma \given \vec{y}, \vec{x})\)
+  are those that maximize
+  \(\mathcal{L}(\beta_0, \beta_1, \sigma \given \vec{y}, \vec{x})\).
+\item
+  We usually denote estimators by \(\hat{\beta}_0\), \(\hat{\beta}_1\),
+  \(\hat{\sigma}\).
+\item
+  By definition, the maximum likelihood estimators \(\hat{\beta}_0\),
+  \(\hat{\beta}_1\), \(\hat{\sigma}\) are the values of \(\beta_0\),
+  \(\beta_1\), \(\sigma\) that maximize the probability of the observed
+  data.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Maximum likelihood estimation}
+\protect\hypertarget{maximum-likelihood-estimation-1}{}
+\begin{itemize}
+\item
+  In a simple linear regression, the maximum likelihood estimators for
+  the linear coefficients are those that minimize the following \[
+  \sum_{i=1}^n |y_i - (\beta_0 + \beta_1 x_i)|^2,
+  \]
+\item
+  In general, for linear regression, the maximum likelihood estimators
+  always minimize the sum of squared residuals.
+\item
+  In R, for the \texttt{cars} data, the maximum likelihood estimators
+  for \(\beta_0\) and \(\beta_1\) are obtained as follows:
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{M1 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(dist }\SpecialCharTok{\textasciitilde{}}\NormalTok{ speed, }\AttributeTok{data =}\NormalTok{ cars)}
+\FunctionTok{coef}\NormalTok{(M1)}
+\CommentTok{\#\textgreater{} (Intercept)       speed }
+\CommentTok{\#\textgreater{}  {-}17.579095    3.932409}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}[fragile]{Maximum likelihood estimation}
+\protect\hypertarget{maximum-likelihood-estimation-2}{}
+\begin{itemize}
+\tightlist
+\item
+  The maximum likelihood estimator for \(\sigma^2\) is the following: \[
+  \frac{1}{n}\sum_{i=1}^n |y_i - (\hat{\beta}_0 + \hat{\beta}_1 x_i)|^2,
+  \]
+\item
+  Using R, we can obtain this as follows:
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mean}\NormalTok{(}\FunctionTok{residuals}\NormalTok{(M1)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\CommentTok{\#\textgreater{} [1] 227.0704}
+\end{Highlighting}
+\end{Shaded}
+
+and so the maximum likelihood estimator for \(\sigma\) is
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mean}\NormalTok{(}\FunctionTok{residuals}\NormalTok{(M1)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{sqrt}\NormalTok{()}
+\CommentTok{\#\textgreater{} [1] 15.06886}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}{The model's log likelihood}
+\protect\hypertarget{the-models-log-likelihood}{}
+\begin{itemize}
+\tightlist
+\item
+  When we speak of the log likelihood of a model, we mean the maximum
+  value of the model's log likelihood function.
+\item
+  In other words, it is the value of the log likelihood function at its
+  maximum likelihood estimators' values.
+\item
+  In yet other words, \textbf{it is the (log) probability of the
+  observed data given the maximum likelihood estimates of its
+  parameters}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{The model's log likelihood}
+\protect\hypertarget{the-models-log-likelihood-1}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{beta\_0\_mle }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(M1)[}\StringTok{\textquotesingle{}(Intercept)\textquotesingle{}}\NormalTok{]}
+\NormalTok{beta\_1\_mle }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(M1)[}\StringTok{\textquotesingle{}speed\textquotesingle{}}\NormalTok{]}
+\NormalTok{sigma\_mle }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{residuals}\NormalTok{(M1)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{sqrt}\NormalTok{()}
+
+\FunctionTok{log\_prob\_obs\_lm}\NormalTok{(y, x, }
+                \AttributeTok{beta\_0 =}\NormalTok{ beta\_0\_mle,}
+                \AttributeTok{beta\_1 =}\NormalTok{ beta\_1\_mle,}
+                \AttributeTok{sigma =}\NormalTok{ sigma\_mle) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{sum}\NormalTok{()}
+\CommentTok{\#\textgreater{} [1] {-}206.5784}
+\CommentTok{\# same as ...}
+\FunctionTok{logLik}\NormalTok{(M1)}
+\CommentTok{\#\textgreater{} \textquotesingle{}log Lik.\textquotesingle{} {-}206.5784 (df=3)}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}{Residual sum of squares}
+\protect\hypertarget{residual-sum-of-squares}{}
+\begin{itemize}
+\tightlist
+\item
+  The sum of squared residuals in a simple linear model is \[
+  \text{RSS} = \sum_{i=1}^n |y_i - (\beta_0 + \beta_1 x_i)|^2.
+  \]
+\item
+  The RSS when using the maximum likelihood estimators is \[
+  \begin{aligned}
+  \text{RSS} &= \sum_{i=1}^n |y_i - (\hat{\beta}_0 + \hat{\beta}_1 x_i)|^2,\\
+           &= \sum_{i=1}^n |y_i - \hat{y}_i|^2
+  \end{aligned}
+  \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Residual sum of squares and log likelihood}
+\protect\hypertarget{residual-sum-of-squares-and-log-likelihood}{}
+\begin{itemize}
+\tightlist
+\item
+  The residual sum of squares (RSS) when using the maximum likelihood
+  estimators is
+\end{itemize}
+
+\[
+\begin{aligned}
+\text{RSS} &= \sum_{i=1}^n |y_i - (\hat{\beta}_0 + \hat{\beta}_1 x_i)|^2,\\
+           &= \sum_{i=1}^n |y_i - \hat{y}_i|^2
+\end{aligned}
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  The RSS is a measure of the model's lack of fit.
+\item
+  The model's log likelihood and its RSS are related as follows: \[
+  \log \mathcal{L} = -\frac{n}{2}\left(\log(2\pi) - \log(n) + \log(\text{RSS}) + 1 \right) 
+  \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Residual sum of squares and log likelihood}
+\protect\hypertarget{residual-sum-of-squares-and-log-likelihood-1}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rss }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(}\FunctionTok{residuals}\NormalTok{(M1)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{n }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(y)}
+
+\SpecialCharTok{{-}}\NormalTok{(n}\SpecialCharTok{/}\DecValTok{2}\NormalTok{) }\SpecialCharTok{*}\NormalTok{ (}\FunctionTok{log}\NormalTok{(}\DecValTok{2}\SpecialCharTok{*}\NormalTok{pi) }\SpecialCharTok{{-}} \FunctionTok{log}\NormalTok{(n) }\SpecialCharTok{+} \FunctionTok{log}\NormalTok{(rss) }\SpecialCharTok{+} \DecValTok{1}\NormalTok{)}
+\CommentTok{\#\textgreater{} [1] {-}206.5784}
+\FunctionTok{logLik}\NormalTok{(M1)}
+\CommentTok{\#\textgreater{} \textquotesingle{}log Lik.\textquotesingle{} {-}206.5784 (df=3)}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}{Root mean square error}
+\protect\hypertarget{root-mean-square-error}{}
+\begin{itemize}
+\tightlist
+\item
+  The larger the sample size, the larger the RSS.
+\item
+  An alternative to RSS as a measure of model fit is the square root of
+  the mean of the squared residuals, known as the \emph{root mean square
+  error} (RMSE): \[
+  \text{RMSE} = \sqrt{\frac{\text{RSS}}{n}},
+  \]
+\item
+  This is \(\hat{\sigma}_{\text{mle}}\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Mean absolute error}
+\protect\hypertarget{mean-absolute-error}{}
+\begin{itemize}
+\tightlist
+\item
+  Related to RMSE is the mean absolute error (MAE), which the mean of
+  the absolute values of the residuals. \[
+  \text{MAE} = \frac{\sum_{i=1}^n|y_i - \hat{y}_i|}{n}
+  \]
+\item
+  In R
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mean}\NormalTok{(}\FunctionTok{abs}\NormalTok{(}\FunctionTok{residuals}\NormalTok{(M1)))}
+\CommentTok{\#\textgreater{} [1] 11.58012}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}{Deviance}
+\protect\hypertarget{deviance}{}
+\begin{itemize}
+\tightlist
+\item
+  Deviance is used as a measure of model fit in generalized linear
+  models.
+\item
+  Strictly speaking, the deviance of model \(M_0\) is \[
+  2 \left(\log\mathcal{L}_{s} - \log\mathcal{L}_{0} \right),
+  \] where \(\log\mathcal{L}_{0}\) is the log likelihood (at its
+  maximum) of model \(M_0\), and \(\log\mathcal{L}_{s}\) is a
+  \emph{saturated} model, i.e.~one with as many parameters as there are
+  data points.
+\item
+  When comparing two models, \(M_0\) and \(M_1\), the saturated model is
+  the same, and so the difference of the deviances of \(M_0\) and
+  \(M_1\) is \[
+  \begin{aligned}
+  (- 2 \log\mathcal{L}_{0}) &- (- 2 \log\mathcal{L}_{1}),\\
+  \mathcal{D}_0 &- \mathcal{D}_1,
+  \end{aligned}
+  \] and so the deviance of \(M_0\) is usually defined simply as \[
+  -2 \log\mathcal{L}_{0}.
+  \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Differences of deviances}
+\protect\hypertarget{differences-of-deviances}{}
+\begin{itemize}
+\item
+  Differences of deviances are equivalent to log likelihood ratios: \[
+  \begin{aligned}
+  \mathcal{D}_0 - \mathcal{D}_1 &= -2 \log\mathcal{L}_{0} -  -2 \log\mathcal{L}_{1},\\
+                              &= -2 \left(\log\mathcal{L}_{0} -  \log\mathcal{L}_{1}\right),\\
+                              &= -2 \log\left(\frac{\mathcal{L}_{0}}{\mathcal{L}_{1}}\right),\\
+                              &= 2 \log\left(\frac{\mathcal{L}_{1}}{\mathcal{L}_{0}}\right).
+  \end{aligned}
+  \]
+\item
+  Clearly, \(\frac{\mathcal{L}_{1}}{\mathcal{L}_{0}}\) the factor by
+  which the likelihood of model \(M_1\) is greater than that of model
+  \(M_0\).
+\item
+  Therefore, the difference of the deviance of models \(M_0\) and
+  \(M_1\) (\(D_0 - D_1\)), gives the (two times) the logarithm of the
+  factor by the likelihood of model \(M_1\) is greater than that of
+  model \(M_0\).
+\item
+  The larger \(D_0 - D_1\), the greater the likelihood of \(M_1\)
+  compared to \(M_0\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Logistic regression example}
+\protect\hypertarget{logistic-regression-example}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cars\_df }\OtherTok{\textless{}{-}} \FunctionTok{mutate}\NormalTok{(cars, }\AttributeTok{z =}\NormalTok{ dist }\SpecialCharTok{\textgreater{}} \FunctionTok{median}\NormalTok{(dist))}
+\NormalTok{M2 }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(z }\SpecialCharTok{\textasciitilde{}}\NormalTok{ speed,}
+          \AttributeTok{data =}\NormalTok{ cars\_df, }
+          \AttributeTok{family =} \FunctionTok{binomial}\NormalTok{(}\AttributeTok{link =} \StringTok{\textquotesingle{}logit\textquotesingle{}}\NormalTok{)}
+\NormalTok{)}
+
+\FunctionTok{logLik}\NormalTok{(M2)}
+\CommentTok{\#\textgreater{} \textquotesingle{}log Lik.\textquotesingle{} {-}17.73468 (df=2)}
+\FunctionTok{deviance}\NormalTok{(M2)}
+\CommentTok{\#\textgreater{} [1] 35.46936}
+\FunctionTok{logLik}\NormalTok{(M2) }\SpecialCharTok{*} \SpecialCharTok{{-}}\DecValTok{2}
+\CommentTok{\#\textgreater{} \textquotesingle{}log Lik.\textquotesingle{} 35.46936 (df=2)}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}{Conditional probability in logistic regression}
+\protect\hypertarget{conditional-probability-in-logistic-regression}{}
+\begin{itemize}
+\item
+  The model in a logistic regression (with one predictor) is \[
+  \begin{aligned}
+  y_i &\sim \textrm{Bernoulli}(\theta_i),\quad\text{for $i \in 1\ldots n$}\\
+  \log\left(\frac{\theta_i}{1 - \theta_i}\right) &= \beta_0 + \beta_1 x_i
+  \end{aligned}
+  \]
+\item
+  The conditional probability of \(y_1, y_2 \ldots y_n\) given
+  \(x_1, x_2 \ldots x_n\) is \[
+  \prod_{i=1}^n \theta_i^{y_i} (1-\theta_i)^{1-y_i},
+  \] where each \(\theta_i\) is \[
+  \log\left(\frac{\theta_i}{1 - \theta_i}\right) 
+  = \beta_0 + \beta_1 x_i
+  \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Conditional probability in logistic regression}
+\protect\hypertarget{conditional-probability-in-logistic-regression-1}{}
+\begin{itemize}
+\tightlist
+\item
+  The logarithm of the conditional probability of
+  \(y_1, y_2 \ldots y_n\) is \[
+  \begin{aligned}
+  &\log\left(\prod_{i=1}^n \theta_i^{y_i} (1-\theta_i)^{1-y_i}\right) = \sum_{i=1}^n \log\left( \theta_i^{y_i} (1-\theta_i)^{1-y_i}\right),\\
+  =&\sum_{i=1}^n \left( y_i \log\theta_i + (1-y_i)\log(1-\theta_i)\right),\\
+  =&\sum_{i=1}^n y_i \log\theta_i + \sum_{i=1}^n (1-y_i)\log(1-\theta_i)
+  \end{aligned}
+  \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Conditional probability in logistic regression}
+\protect\hypertarget{conditional-probability-in-logistic-regression-2}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{theta }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(M2, }\AttributeTok{type =} \StringTok{\textquotesingle{}response\textquotesingle{}}\NormalTok{)}
+\FunctionTok{sum}\NormalTok{(}\FunctionTok{log}\NormalTok{(theta[cars\_df}\SpecialCharTok{$}\NormalTok{z])) }\SpecialCharTok{+} \FunctionTok{sum}\NormalTok{(}\FunctionTok{log}\NormalTok{(}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{theta[}\SpecialCharTok{!}\NormalTok{cars\_df}\SpecialCharTok{$}\NormalTok{z]))}
+\CommentTok{\#\textgreater{} [1] {-}17.73468}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{z }\OtherTok{\textless{}{-}} \FunctionTok{pull}\NormalTok{(cars\_df, z)}
+\FunctionTok{sum}\NormalTok{(z }\SpecialCharTok{*} \FunctionTok{log}\NormalTok{(theta) }\SpecialCharTok{+}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{z) }\SpecialCharTok{*} \FunctionTok{log}\NormalTok{(}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ theta))}
+\CommentTok{\#\textgreater{} [1] {-}17.73468}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}{Deviance residuals}
+\protect\hypertarget{deviance-residuals}{}
+\begin{itemize}
+\tightlist
+\item
+  Deviance residuals are values such that their sum of squares is equal
+  to the model's deviance.
+\item
+  We know that the sum, for \(i \in 1 \ldots n\), of the following is
+  the log likelihood: \[
+  y_i \log\theta_i + (1-y_i)\log(1-\theta_i),
+  \] and so the sum of the following, for \(i \in 1 \ldots n\), is the
+  deviance: \[
+  -2 \left(y_i \log\theta_i + (1-y_i)\log(1-\theta_i)\right).
+  \]
+\item
+  So the sum of the \emph{squares} of the following, for
+  \(i \in 1 \ldots n\), is the deviance: \[
+  \sqrt{-2 \left(y_i \log\theta_i + (1-y_i)\log(1-\theta_i)\right)}.
+  \]
+\item
+  All of these values will necessarily be positive.
+\item
+  It is conventional for deviance residuals to be negative when
+  \(y_i=0\) and positive when \(y_i = 1\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Deviance residuals}
+\protect\hypertarget{deviance-residuals-1}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{d }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{( }\SpecialCharTok{{-}}\DecValTok{2} \SpecialCharTok{*}\NormalTok{ (z }\SpecialCharTok{*} \FunctionTok{log}\NormalTok{(theta) }\SpecialCharTok{+}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{z) }\SpecialCharTok{*} \FunctionTok{log}\NormalTok{(}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ theta)))}
+\FunctionTok{sum}\NormalTok{(d}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\CommentTok{\#\textgreater{} [1] 35.46936}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{d[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{25}\NormalTok{, }\DecValTok{35}\NormalTok{, }\DecValTok{50}\NormalTok{)]}
+\CommentTok{\#\textgreater{}          1         25         35         50 }
+\CommentTok{\#\textgreater{} 0.05724272 1.00995907 0.71599367 0.11291237}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{residuals}\NormalTok{(M2)[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{25}\NormalTok{, }\DecValTok{35}\NormalTok{, }\DecValTok{50}\NormalTok{)]}
+\CommentTok{\#\textgreater{}           1          25          35          50 }
+\CommentTok{\#\textgreater{} {-}0.05724272 {-}1.00995907  0.71599367  0.11291237}
+\NormalTok{z[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{25}\NormalTok{, }\DecValTok{35}\NormalTok{, }\DecValTok{50}\NormalTok{)]}
+\CommentTok{\#\textgreater{} [1] FALSE FALSE  TRUE  TRUE}
+\NormalTok{(}\FunctionTok{ifelse}\NormalTok{(z, }\DecValTok{1}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{) }\SpecialCharTok{*}\NormalTok{ d)[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{25}\NormalTok{, }\DecValTok{35}\NormalTok{, }\DecValTok{50}\NormalTok{)]}
+\CommentTok{\#\textgreater{}           1          25          35          50 }
+\CommentTok{\#\textgreater{} {-}0.05724272 {-}1.00995907  0.71599367  0.11291237}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\end{document}

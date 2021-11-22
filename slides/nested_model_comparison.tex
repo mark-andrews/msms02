@@ -1,0 +1,664 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  10pt,
+  ignorenonframetext,
+]{beamer}
+\title{Nested Model Comparison in General and Generalized Linear Models}
+\author{Mark Andrews\\
+Psychology Department, Nottingham Trent University\\
+\strut \\
+\texttt{mark.andrews@ntu.ac.uk}}
+\date{}
+
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usefonttheme{serif}
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Nested Model Comparison in General and Generalized Linear Models},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\newif\ifbibliography
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\RequirePackage{pifont,manfnt}
+\RequirePackage{booktabs}
+\usepackage{subcaption}
+\RequirePackage[T1]{fontenc}
+\RequirePackage{mathpazo}
+\RequirePackage{eulervm}
+\linespread{1.05}
+\RequirePackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{arrows,positioning,matrix} 
+\RequirePackage{xspace}
+\RequirePackage{apacite}
+\RequirePackage{rotating}
+\RequirePackage{multirow}
+\usepackage{fontawesome}
+\usepackage{nth}
+\pgfplotsset{compat=1.16}
+\newcommand{\Prob}[1]{\mathrm{P}( #1 )}
+\newcommand{\dcat}[1]{\mathrm{dcat}( #1 )}
+\newcommand{\ddirichlet}[1]{\mathrm{ddirichlet}( #1 )}
+\newcommand*{\given}{\vert}
+\newcommand{\hdpmm}{\textsc{hdptm}\xspace}
+\newcommand{\bnc}{\textsc{bnc}\xspace}
+\newcommand{\brms}{Brms\xspace}
+\newcommand{\mcmc}{\textsc{mcmc}\xspace}
+\newcommand{\icc}{\textsc{icc}\xspace}
+\newcommand{\reml}{\textsc{reml}\xspace}
+\newcommand{\mad}{\textsc{mad}\xspace}
+
+\newcommand\iidsim{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny iid}}}{\sim}}}
+\newcommand\defeq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny def}}}{=}}}
+\newcommand{\hpd}{\textsc{hpd}\xspace}
+\newcommand{\Probc}[1]{\mathrm{P}_{\text{\!\tiny \textsc{c}}}( #1 )}
+\newcommand{\Proba}[1]{\mathrm{P}_{\text{\!\tiny \textsc{a}}}( #1 )}
+\newcommand{\wnew}{w_{j}}
+\newcommand{\wjinew}{w_{ji}}
+\newcommand{\pinew}{\pi_{j}}
+\newcommand{\data}{\mathcal{D}}
+\newcommand{\dic}{\textsc{dic}\xspace}
+\newcommand{\studentt}[1]{t_{#1}}
+\setbeamerfont{title}{family=\it}
+\setbeamerfont{frametitle}{family=\it}
+
+\RequirePackage{tikz}
+\usetikzlibrary{trees}
+\usetikzlibrary{matrix}
+
+\RequirePackage{amssymb,latexsym,amsmath,amsfonts,amscd}
+
+\usecolortheme[named=gray]{structure} 
+\setbeamercolor{titlelike}{fg=black!60!red}
+\definecolor{Mygrey}{gray}{0.75}
+
+\newcommand{\rreallytiny}{\fontsize{3}{3}\selectfont}
+\newcommand{\reallytiny}{\fontsize{5}{5}\selectfont}
+
+\usetikzlibrary{decorations.pathmorphing} % noisy shapes
+\usetikzlibrary{fit}					% fitting shapes to coordinates
+\usetikzlibrary{backgrounds}	% drawing the background after the foreground
+\usetikzlibrary{matrix}
+
+\tikzstyle{background}=[rectangle, fill=none,
+						draw=black,
+                                                inner sep=0.3cm,
+                                                rounded corners=3mm]
+
+\tikzstyle{observation}=[circle,font=\small,minimum size=5mm,inner sep=0mm,
+                                    draw=black!70,
+                                    fill=black!10]
+
+\tikzstyle{state}=[circle,font=\small,minimum size=5mm,inner sep=0mm,
+                                   draw=black!70,
+                                    fill=none]
+
+\tikzstyle{limit}=[rectangle,font=\small,minimum size=0mm,inner sep=0mm,
+                                    fill=none]
+
+\tikzstyle{parameter}=[circle,font=\small,minimum size=5mm,inner sep=0mm,
+                                   draw=black!70,
+                                    fill=none]
+% tikz stuff
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usetikzlibrary{positioning,shapes,trees,arrows,shadows,arrows.meta,backgrounds,fit}
+
+\tikzset{every path/.style={-latex,thick}}
+
+\tikzset{
+  basic/.style = {font=\sffamily},
+  % material/.style  = {basic, text width=8mm, font=\footnotesize\sffamily, fill=yellow!60},
+  % revision/.style  = {material, fill=blue!30},
+  % root/.style   = {basic,  align=center, fill=pink!60},
+  level 1/.style = {basic, align=center, sibling distance = 30mm},
+  level 2/.style = {basic, sibling distance = 20mm},
+  level 3/.style = {basic, sibling distance = 15mm},
+  % level 4/.style = {level distance=10mm,basic, fill=pink!60, sibling distance = 20mm}
+}
+
+
+\graphicspath{{../images/}}
+
+\DeclareSymbolFont{legacymaths}{OT1}{cmr}{m}{n}
+\DeclareMathAccent{\dot}     {\mathalpha}{legacymaths}{95}
+\DeclareMathAccent{\bar}     {\mathalpha}{legacymaths}{22}
+\DeclareMathAccent{\tilde}     {\mathalpha}{legacymaths}{126}
+
+\setbeamertemplate{footline}[frame number]
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{What are nested models}
+\protect\hypertarget{what-are-nested-models}{}
+\begin{itemize}
+\tightlist
+\item
+  Model \(M_0\) is nested in model \(M_1\) if the parameter space of
+  \(M_0\) is a subset of the parameter space of \(M_1\).
+\item
+  For example, if \(M_0\) is the following linear model: \[
+  \text{for $i \in 1\ldots n,$} \quad y_i = \beta_0 + \beta_1 x_{1i} + \epsilon_i,\quad \epsilon_i \sim N(0, \sigma^2),
+  \] its parameter space is \(\beta_0\), \(\beta_1\), \(\sigma^2\).
+\item
+  If \(M_1\) is the following linear model: \[
+  \text{for $i \in 1\ldots n,$} \quad y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \epsilon_i,\quad \epsilon_i \sim N(0, \sigma^2),
+  \] its parameter space is \(\beta_0\), \(\beta_1\), \(\beta_2\),
+  \(\sigma^2\).
+\item
+  Any set of values of \(\beta_0\), \(\beta_1\), \(\sigma^2\) in \(M_0\)
+  is a point in the parameter space of \(\beta_0\), \(\beta_1\),
+  \(\beta_2\), \(\sigma^2\) of \(M_1\) if we simply set \(\beta_2 = 0\).
+\item
+  In other words, we can make \(M_0\) with any given values of
+  \(\beta_0\), \(\beta_1\), \(\sigma^2\) from \(M_1\) by setting
+  \(\beta_0\), \(\beta_1\), \(\sigma^2\) in \(M_1\) to these same values
+  and setting \(\beta_2 = 0\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Nested normal linear models}
+\protect\hypertarget{nested-normal-linear-models}{}
+\begin{itemize}
+\tightlist
+\item
+  We can compare nested normal linear models using F tests.
+\item
+  Assume \(M_0\) and \(M_1\) are normal linear models, with \(M_0\)
+  nested in \(M_1\).
+\item
+  We calculate \(\text{RSS}_0\) and \(\text{RSS}_1\), the residual sums
+  of squares of \(M_0\) and \(M_1\), respectively.
+\item
+  \(\text{RSS}_0\) will be greater than or equal to \(\text{RSS}_1\).
+\item
+  Then \[
+  \begin{aligned}
+  \text{proportional increase in error}&= \frac{\text{increase in error}}{\text{minimal error}} ,\\
+  \\
+  &= \frac{\text{RSS}_0 - \text{RSS}_1}{\text{RSS}_1},
+  \end{aligned}
+  \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Nested normal linear models}
+\protect\hypertarget{nested-normal-linear-models-1}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{M1 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(Fertility }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Agriculture }\SpecialCharTok{+}\NormalTok{ Education }\SpecialCharTok{+}\NormalTok{ Catholic, }\AttributeTok{data =}\NormalTok{ swiss)}
+\NormalTok{M0 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(Fertility }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Agriculture }\SpecialCharTok{+}\NormalTok{ Education, }\AttributeTok{data =}\NormalTok{ swiss)}
+
+\NormalTok{RSS\_0 }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(}\FunctionTok{residuals}\NormalTok{(M0)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{RSS\_1 }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(}\FunctionTok{residuals}\NormalTok{(M1)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+
+\FunctionTok{c}\NormalTok{(RSS\_0, RSS\_1)}
+\CommentTok{\#\textgreater{} [1] 3953.270 2567.884}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(RSS\_0 }\SpecialCharTok{{-}}\NormalTok{ RSS\_1)}\SpecialCharTok{/}\NormalTok{RSS\_1}
+\CommentTok{\#\textgreater{} [1] 0.5395049}
+\end{Highlighting}
+\end{Shaded}
+
+In other words, \(\text{RSS}_0\) is 1.54 greater than \(\text{RSS}_1\).
+\end{frame}
+
+\begin{frame}[fragile]{Nested normal linear models}
+\protect\hypertarget{nested-normal-linear-models-2}{}
+\begin{itemize}
+\tightlist
+\item
+  The F ratio is \[
+  \begin{aligned}
+  F &= \underbrace{\frac{\text{RSS}_0 - \text{RSS}_1}{\text{RSS}_1}}_{\text{effect size}} \times \underbrace{\frac{\text{df}_1}{\text{df}_0 - \text{df}_1}}_{\text{sample size}}
+  &= \frac{(\text{RSS}_0 - \text{RSS}_1)/(\text{df}_0 - \text{df}_1)}{\text{RSS}_1/\text{df}_1}.
+  \end{aligned}
+  \] where \(\text{df}_1\) is \(N - (K_1 + 1)\), where \(K_1\) is number
+  of (predictor; excluding intercept) coefficients in \(M_1\).
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_0 }\OtherTok{\textless{}{-}}\NormalTok{ M0}\SpecialCharTok{$}\NormalTok{df.residual}
+\NormalTok{df\_1 }\OtherTok{\textless{}{-}}\NormalTok{ M1}\SpecialCharTok{$}\NormalTok{df.residual}
+\FunctionTok{c}\NormalTok{(df\_0, df\_1, df\_0 }\SpecialCharTok{{-}}\NormalTok{ df\_1, df\_1}\SpecialCharTok{/}\NormalTok{(df\_0 }\SpecialCharTok{{-}}\NormalTok{ df\_1))}
+\CommentTok{\#\textgreater{} [1] 44 43  1 43}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}[fragile]{Nested normal linear models}
+\protect\hypertarget{nested-normal-linear-models-3}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RSS\_0}
+\CommentTok{\#\textgreater{} [1] 3953.27}
+\NormalTok{RSS\_1}
+\CommentTok{\#\textgreater{} [1] 2567.884}
+\NormalTok{RSS\_0 }\SpecialCharTok{{-}}\NormalTok{ RSS\_1}
+\CommentTok{\#\textgreater{} [1] 1385.386}
+\NormalTok{df\_0 }\SpecialCharTok{{-}}\NormalTok{ df\_1}
+\CommentTok{\#\textgreater{} [1] 1}
+\NormalTok{df\_1}
+\CommentTok{\#\textgreater{} [1] 43}
+\NormalTok{(RSS\_0 }\SpecialCharTok{{-}}\NormalTok{ RSS\_1)}\SpecialCharTok{/}\NormalTok{(df\_0 }\SpecialCharTok{{-}}\NormalTok{ df\_1)}
+\CommentTok{\#\textgreater{} [1] 1385.386}
+\NormalTok{RSS\_1}\SpecialCharTok{/}\NormalTok{df\_1}
+\CommentTok{\#\textgreater{} [1] 59.71823}
+\NormalTok{((RSS\_0 }\SpecialCharTok{{-}}\NormalTok{ RSS\_1)}\SpecialCharTok{/}\NormalTok{(df\_0 }\SpecialCharTok{{-}}\NormalTok{ df\_1))}\SpecialCharTok{/}\NormalTok{(RSS\_1}\SpecialCharTok{/}\NormalTok{df\_1)}
+\CommentTok{\#\textgreater{} [1] 23.19871}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}[fragile]{Nested normal linear models}
+\protect\hypertarget{nested-normal-linear-models-4}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{anova}\NormalTok{(M0, M1)}
+\CommentTok{\#\textgreater{} Analysis of Variance Table}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Model 1: Fertility \textasciitilde{} Agriculture + Education}
+\CommentTok{\#\textgreater{} Model 2: Fertility \textasciitilde{} Agriculture + Education + Catholic}
+\CommentTok{\#\textgreater{}   Res.Df    RSS Df Sum of Sq      F    Pr(\textgreater{}F)    }
+\CommentTok{\#\textgreater{} 1     44 3953.3                                  }
+\CommentTok{\#\textgreater{} 2     43 2567.9  1    1385.4 23.199 1.842e{-}05 ***}
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}[fragile]{Nested normal linear models}
+\protect\hypertarget{nested-normal-linear-models-5}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{drop1}\NormalTok{(M1, }\AttributeTok{scope =} \SpecialCharTok{\textasciitilde{}}\NormalTok{ Catholic, }\AttributeTok{test =} \StringTok{\textquotesingle{}F\textquotesingle{}}\NormalTok{)}
+\CommentTok{\#\textgreater{} Single term deletions}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Model:}
+\CommentTok{\#\textgreater{} Fertility \textasciitilde{} Agriculture + Education + Catholic}
+\CommentTok{\#\textgreater{}          Df Sum of Sq    RSS    AIC F value    Pr(\textgreater{}F)    }
+\CommentTok{\#\textgreater{} \textless{}none\textgreater{}                2567.9 196.03                      }
+\CommentTok{\#\textgreater{} Catholic  1    1385.4 3953.3 214.31  23.199 1.842e{-}05 ***}
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}[fragile]{Nested normal linear models}
+\protect\hypertarget{nested-normal-linear-models-6}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{drop1}\NormalTok{(M0, }\AttributeTok{scope =} \SpecialCharTok{\textasciitilde{}}\NormalTok{ Education, }\AttributeTok{test =} \StringTok{\textquotesingle{}F\textquotesingle{}}\NormalTok{)}
+\CommentTok{\#\textgreater{} Single term deletions}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Model:}
+\CommentTok{\#\textgreater{} Fertility \textasciitilde{} Agriculture + Education}
+\CommentTok{\#\textgreater{}           Df Sum of Sq    RSS    AIC F value    Pr(\textgreater{}F)    }
+\CommentTok{\#\textgreater{} \textless{}none\textgreater{}                 3953.3 214.31                      }
+\CommentTok{\#\textgreater{} Education  1    2329.8 6283.1 234.09  25.931 7.105e{-}06 ***}
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}[fragile]{Nested normal linear models}
+\protect\hypertarget{nested-normal-linear-models-7}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{drop1}\NormalTok{(M0, }\AttributeTok{scope =} \SpecialCharTok{\textasciitilde{}}\NormalTok{ Education }\SpecialCharTok{+}\NormalTok{ Agriculture, }\AttributeTok{test =} \StringTok{\textquotesingle{}F\textquotesingle{}}\NormalTok{)}
+\CommentTok{\#\textgreater{} Single term deletions}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Model:}
+\CommentTok{\#\textgreater{} Fertility \textasciitilde{} Agriculture + Education}
+\CommentTok{\#\textgreater{}             Df Sum of Sq    RSS    AIC F value    Pr(\textgreater{}F)    }
+\CommentTok{\#\textgreater{} \textless{}none\textgreater{}                   3953.3 214.31                      }
+\CommentTok{\#\textgreater{} Education    1   2329.85 6283.1 234.09 25.9312 7.105e{-}06 ***}
+\CommentTok{\#\textgreater{} Agriculture  1     61.97 4015.2 213.04  0.6897    0.4108    }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}[fragile]{Nested normal linear models}
+\protect\hypertarget{nested-normal-linear-models-8}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{anova}\NormalTok{(M0)}
+\CommentTok{\#\textgreater{} Analysis of Variance Table}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Response: Fertility}
+\CommentTok{\#\textgreater{}             Df Sum Sq Mean Sq F value    Pr(\textgreater{}F)    }
+\CommentTok{\#\textgreater{} Agriculture  1  894.8  894.84  9.9596  0.002886 ** }
+\CommentTok{\#\textgreater{} Education    1 2329.8 2329.85 25.9312 7.105e{-}06 ***}
+\CommentTok{\#\textgreater{} Residuals   44 3953.3   89.85                      }
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}[fragile]{\(R^2\)}
+\protect\hypertarget{r2}{}
+\begin{itemize}
+\tightlist
+\item
+  If we have two models, \(M_0\) and \(M_1\), with \(M_0\) nested in
+  \(M_1\), and with residual sums of squares \(\text{RSS}_0\) and
+  \(\text{RSS}_1\), respectively, we can calculate: \[
+  \begin{aligned}
+  \text{proportional decrease in error}&= \frac{\text{decrease in error (from $M_0$ to $M_1$)}}{\text{error in $M_0$}} ,\\
+  \\
+  &= \frac{\text{RSS}_0 - \text{RSS}_1}{\text{RSS}_0},\\
+  & = R^2
+  \end{aligned}
+  \]
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(RSS\_0 }\SpecialCharTok{{-}}\NormalTok{ RSS\_1) }\SpecialCharTok{/}\NormalTok{ RSS\_0}
+\CommentTok{\#\textgreater{} [1] 0.3504405}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  In other words, the reduction in error from \(M_0\) to \(M_1\) is 0.35
+  of the error of \(M_0\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{\(R^2\): The coefficient of determination}
+\protect\hypertarget{r2-the-coefficient-of-determination}{}
+\begin{itemize}
+\item
+  It can be shown that
+  \[\underbrace{\sum_{i=1}^n (y_i-\bar{y})^2}_{\text{TSS}} = \underbrace{\sum_{i=1}^n (\hat{y}_i - \bar{y})^2}_{\text{ESS}} + \underbrace{\sum_{i=1}^n (y_i - \hat{y}_i)^2}_{\text{RSS}},\]
+  where TSS is \emph{total} sum of squares, ESS is \emph{explained} sum
+  of squares, and RSS is \emph{residual} sum of squares.
+\item
+  The coefficient of determination \(R^2\) is defined as
+  \[\begin{aligned}
+  R^2 = \frac{\text{\footnotesize ESS}}{\text{\footnotesize TSS}} &= \text{\footnotesize Proportion of variation that is explained},\\
+  &= 1 - \frac{\sum_{i=1}^n (y_i - \hat{y}_i)^2 }{\sum_{i=1}^n (y_i-\bar{y})^2 }\end{aligned}\]
+\end{itemize}
+\end{frame}
+
+\begin{frame}{\(R^2\)}
+\protect\hypertarget{r2-1}{}
+\begin{itemize}
+\item
+  If \(M_0\) is a \emph{null} model, i.e.~no predictors, then
+  \(\text{TSS}\) = \(\text{RSS}_0\).
+\item
+  It can be shown that
+  \[\underbrace{\sum_{i=1}^n (y_i-\bar{y})^2}_{\text{RSS}_0} = \underbrace{\sum_{i=1}^n (\hat{y}_i - \bar{y})^2}_{\text{RSS}_0 - \text{RSS}_1} + \underbrace{\sum_{i=1}^n (y_i - \hat{y}_i)^2}_{\text{RSS}_1}.\]
+\item
+  As such, \(R^2\) is defined as \[\begin{aligned}
+  R^2 = \frac{\text{RSS}_0-\text{RSS}_1}{\text{RSS}_0} = 1 - \frac{\text{RSS}_1}{\text{RSS}_0}
+  \end{aligned},\] or 1 minus the error of \(M_1\) relative to \(M_0\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{\(R^2\)}
+\protect\hypertarget{r2-2}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{M\_null }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(Fertility }\SpecialCharTok{\textasciitilde{}} \DecValTok{1}\NormalTok{, }\AttributeTok{data =}\NormalTok{ swiss)}
+\NormalTok{RSS\_null }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(}\FunctionTok{residuals}\NormalTok{(M\_null)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{RSS\_0 }\SpecialCharTok{/}\NormalTok{ RSS\_null}
+\CommentTok{\#\textgreater{} [1] 0.5507516}
+\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ RSS\_0 }\SpecialCharTok{/}\NormalTok{ RSS\_null}
+\CommentTok{\#\textgreater{} [1] 0.4492484}
+\NormalTok{(RSS\_null }\SpecialCharTok{{-}}\NormalTok{ RSS\_0) }\SpecialCharTok{/}\NormalTok{ RSS\_null}
+\CommentTok{\#\textgreater{} [1] 0.4492484}
+\FunctionTok{summary}\NormalTok{(M0)}\SpecialCharTok{$}\NormalTok{r.squared}
+\CommentTok{\#\textgreater{} [1] 0.4492484}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}{Adjusted \(R^2\)}
+\protect\hypertarget{adjusted-r2}{}
+\begin{itemize}
+\item
+  By explaining proportion of variance explained, \(R^2\) is used a
+  \emph{goodness of fit} measure.
+\item
+  However, \(R^2\) will always grow with \(K\), the number of
+  predictors.
+\item
+  \(R^2\) can be \emph{adjusted} to counteract the artificial effect of
+  increasing numbers of predictors as follows:
+  \[%R^2_{\text{Adj}} = 1 - (1-R^2) \frac{n-1}{n-K-1}
+  R^2_{\text{Adj}}  = \underbrace{1-\frac{\text{RSS}}{\text{TSS}}}_{R^2}\underbrace{\frac{n-1}{n-K-1}}_{\text{penalty}},\]
+  where \(n\) is sample size.
+\item
+  \(R^2_{\text{Adj}}\) is not identical to the proportion of variance
+  explained in the \emph{sample}, but is an unbiased measured of the
+  population \(R^2\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Adjusted \(R^2\)}
+\protect\hypertarget{adjusted-r2-1}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n }\OtherTok{\textless{}{-}} \FunctionTok{nrow}\NormalTok{(M0}\SpecialCharTok{$}\NormalTok{model)}
+\NormalTok{K }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(}\FunctionTok{coef}\NormalTok{(M0)) }\SpecialCharTok{{-}} \DecValTok{1} \CommentTok{\# no. of predictor coefs}
+\NormalTok{penalty }\OtherTok{\textless{}{-}}\NormalTok{ (n }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}\SpecialCharTok{/}\NormalTok{(n }\SpecialCharTok{{-}}\NormalTok{ K }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}
+\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ (RSS\_0 }\SpecialCharTok{/}\NormalTok{ RSS\_null) }\SpecialCharTok{*}\NormalTok{ penalty}
+\CommentTok{\#\textgreater{} [1] 0.4242143}
+\FunctionTok{summary}\NormalTok{(M0)}\SpecialCharTok{$}\NormalTok{adj.r.squared}
+\CommentTok{\#\textgreater{} [1] 0.4242143}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}{Deviance}
+\protect\hypertarget{deviance}{}
+\begin{itemize}
+\item
+  The \emph{deviance} of a model is defined
+  \[-2 \log  L(\hat{\beta}\given\mathcal{D}) ,\] where \(\hat{\beta}\)
+  are the mle estimates.
+\item
+  The better the model fit, the \emph{lower} the deviance.
+\item
+  This can be seen as equivalent to RSS for generalized linear models.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Deviance}
+\protect\hypertarget{deviance-1}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{swiss\_df }\OtherTok{\textless{}{-}} \FunctionTok{mutate}\NormalTok{(swiss, }\AttributeTok{y =}\NormalTok{ Fertility }\SpecialCharTok{\textgreater{}} \FunctionTok{median}\NormalTok{(Fertility))}
+\NormalTok{M1 }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Agriculture }\SpecialCharTok{+}\NormalTok{ Education }\SpecialCharTok{+}\NormalTok{ Catholic, }
+          \AttributeTok{data =}\NormalTok{ swiss\_df, }\AttributeTok{family =} \FunctionTok{binomial}\NormalTok{())}
+\NormalTok{M0 }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Agriculture }\SpecialCharTok{+}\NormalTok{ Education, }\AttributeTok{data =}\NormalTok{ swiss\_df, }
+          \AttributeTok{family =} \FunctionTok{binomial}\NormalTok{())}
+
+\NormalTok{D\_0 }\OtherTok{\textless{}{-}} \FunctionTok{deviance}\NormalTok{(M0)}
+\NormalTok{D\_1 }\OtherTok{\textless{}{-}} \FunctionTok{deviance}\NormalTok{(M1)}
+
+\FunctionTok{c}\NormalTok{(D\_0, D\_1)}
+\CommentTok{\#\textgreater{} [1] 54.37716 40.70328}
+\NormalTok{(D\_0 }\SpecialCharTok{{-}}\NormalTok{ D\_1) }\SpecialCharTok{/}\NormalTok{ D\_1 }\CommentTok{\# prop. incr. error}
+\CommentTok{\#\textgreater{} [1] 0.3359405}
+\NormalTok{(D\_0 }\SpecialCharTok{{-}}\NormalTok{ D\_1) }\SpecialCharTok{/}\NormalTok{ D\_0 }\CommentTok{\# equiv to R\^{}2?}
+\CommentTok{\#\textgreater{} [1] 0.2514637}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\begin{frame}{Model comparison with deviance}
+\protect\hypertarget{model-comparison-with-deviance}{}
+\begin{itemize}
+\item
+  Let us assume we have two models: \(M_1\) and \(M_0\) where \(M_0\) is
+  nested in \(M_1\).
+\item
+  The deviance of \(M_0\) minus the deviance of the \(M_1\) is
+  \[\Delta_{D} = D_0 - D_1.\]
+\item
+  Under the null hypothesis, \(\Delta_D\) is distributed as \(\chi^2\)
+  with \(K_1 - K_0\) df, where \(K_1\) is the number of parameters in
+  \(M_1\) and \(K_0\) is the number of parameters in \(M_0\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Model comparison with deviance}
+\protect\hypertarget{model-comparison-with-deviance-1}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{K\_0 }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(}\FunctionTok{coef}\NormalTok{(M0))}
+\NormalTok{K\_1 }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(}\FunctionTok{coef}\NormalTok{(M1))}
+
+\FunctionTok{pchisq}\NormalTok{(D\_0 }\SpecialCharTok{{-}}\NormalTok{ D\_1, }
+       \AttributeTok{df =}\NormalTok{ K\_1 }\SpecialCharTok{{-}}\NormalTok{ K\_0,}
+       \AttributeTok{lower.tail =}\NormalTok{ F)}
+\CommentTok{\#\textgreater{} [1] 0.0002174578}
+\FunctionTok{anova}\NormalTok{(M0, M1, }\AttributeTok{test =} \StringTok{\textquotesingle{}Chisq\textquotesingle{}}\NormalTok{)}
+\CommentTok{\#\textgreater{} Analysis of Deviance Table}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Model 1: y \textasciitilde{} Agriculture + Education}
+\CommentTok{\#\textgreater{} Model 2: y \textasciitilde{} Agriculture + Education + Catholic}
+\CommentTok{\#\textgreater{}   Resid. Df Resid. Dev Df Deviance  Pr(\textgreater{}Chi)    }
+\CommentTok{\#\textgreater{} 1        44     54.377                          }
+\CommentTok{\#\textgreater{} 2        43     40.703  1   13.674 0.0002175 ***}
+\CommentTok{\#\textgreater{} {-}{-}{-}}
+\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\end{Highlighting}
+\end{Shaded}
+\end{frame}
+
+\end{document}
