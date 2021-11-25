@@ -225,8 +225,8 @@ $$
 \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \left( \alpha \sum_{k=0}^K |\beta_k| + (1-\alpha)\sum_{k=0}^K \beta^2_k \right).
 $$
 * The values of $\alpha$ ranges from $0$ to $1$.
-* When $\alpha = 0$, this is pure lasso regression.
-* When $\alpha = 1$, this is pure ridge regression.
+* When $\alpha = 1$, this is pure lasso regression.
+* When $\alpha = 0$, this is pure ridge regression.
 
 
 # References

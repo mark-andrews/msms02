@@ -148,3 +148,27 @@ multimodel_result
 relative_importance_weights(multimodel_result)
 
 bootstrap_aic(multimodel)
+
+
+
+# Model averaging ---------------------------------------------------------
+
+library(MuMIn)
+M5 <- lm(Fertility ~ ., data = swiss, na.action = 'na.fail')
+mmM5 <- dredge(M5)
+
+mmM5_avg <- model.avg(mmM5, subset = delta < 4)
+mmM5_avg$coefArray[,,'Agriculture']
+
+confint(mmM5_avg)
+
+# Lasso etc ---------------------------------------------------------------
+
+library(glmnet)
+
+y <- data_df$train$y
+X <- as.matrix(dplyr::select(data_df$train, starts_with('x_')))
+
+M10_lasso <- glmnet(X, y, alpha = 1)
+
+plot(M10_lasso, xvar='lambda', label = TRUE)
