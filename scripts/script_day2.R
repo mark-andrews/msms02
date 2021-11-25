@@ -83,3 +83,68 @@ vocab_df <- read_csv("https://raw.githubusercontent.com/mark-andrews/msms02/main
 ggplot(vocab_df,
        aes(x = age, y = vocab)
 ) + geom_point()
+
+library(splines)
+
+spline_reg_aic <- map_dbl(seq(3, 30),
+        ~AICc(lm(vocab ~ ns(age, df = .), data = vocab_df))
+)
+
+
+min(spline_reg_aic)
+which.min(spline_reg_aic)
+
+# plot optimal model
+plot(predict(lm(vocab ~ ns(age, df = 6), data = vocab_df)))
+plot(predict(lm(vocab ~ ns(age, df = 5), data = vocab_df)))
+plot(predict(lm(vocab ~ ns(age, df = 4), data = vocab_df)))
+
+spline_reg_aic - min(spline_reg_aic)
+
+plot(
+  predict(lm(vocab ~ ns(age, df = 30), data = vocab_df)),
+  type = 'l'
+)
+
+map_dbl(seq(3, 30),
+        ~get_rsq(lm(vocab ~ ns(age, df = .), data = vocab_df))
+)
+
+
+
+# Variable selection ------------------------------------------------------
+
+data_df <- make_data_set(N = 1000,
+                         K = 10,
+                         p = 3,
+                         test_proportion = 0.1)
+
+M7 <- lm(y ~ ., data = data_df$train)
+
+M7_step_bw <- step(M7, direction = 'backward')
+
+M8 <- lm(y ~ 1, data = data_df$train)
+
+M8_step_fwd <- step(M8, direction = 'forward', scope = formula(M7))
+
+M9_step_both <- step(M7, direction = 'both')
+
+# all subsets regression# -------------------------------------------------
+
+multimodel <- all_subsets_lm(data_df$train, y, x_1:x_10)
+
+# all 2^10 models are in the `results` element of multimodel
+length(multimodel$results)
+
+multimodel_result <- all_subsets_lm_eval(multimodel)
+
+multimodel_result %>% 
+  select(-starts_with('x_')) %>% 
+  mutate(cumsum_w = cumsum(w)) %>% 
+  filter(cumsum_w < 0.9)
+
+multimodel_result
+
+relative_importance_weights(multimodel_result)
+
+bootstrap_aic(multimodel)
