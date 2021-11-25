@@ -172,3 +172,63 @@ X <- as.matrix(dplyr::select(data_df$train, starts_with('x_')))
 M10_lasso <- glmnet(X, y, alpha = 1)
 
 plot(M10_lasso, xvar='lambda', label = TRUE)
+
+M10_lasso_lambda_cv <- cv.glmnet(X, y, alpha = 1)
+plot(M10_lasso_lambda_cv)
+
+M10_lasso_lambda_cv$lambda.1se %>% log()
+
+M11_lasso <- glmnet(X, y, alpha = 1, lambda = 0.01)
+coef(M11_lasso)
+
+M11_lasso_b <- glmnet(X, y, alpha = 1, lambda = 0.2)
+coef(M11_lasso_b)
+
+# compare to the full model using mle
+lm(y ~ ., data = data_df$train) %>% coef()
+
+
+# Ridge regression
+
+M12_ridge <- glmnet(X, y, alpha = 0)
+
+plot(M12_ridge, xvar='lambda', label = TRUE)
+
+M12_ridge_lambda_cv <- cv.glmnet(X, y, alpha = 0)
+plot(M12_ridge_lambda_cv)
+
+M12_ridge_lambda_cv$lambda.min
+M12_ridge_lambda_cv$lambda.1se
+
+M13_ridge <- glmnet(X, y, alpha = 0, lambda = 0.1)
+coef(M13_ridge)
+
+M14_ridge <- glmnet(X, y, alpha = 0, lambda = 0.8)
+coef(M14_ridge)
+
+
+# Bayesian methods --------------------------------------------------------
+
+class_df <- read_csv("https://raw.githubusercontent.com/mark-andrews/msms02/main/data/classroom.csv")
+
+library(lme4)
+
+M15 <- lmer(mathscore ~ ses + (ses|schoolid) + (ses|classid), data=class_df)
+M15a <- lmer(mathscore ~ ses + (ses|schoolid) + (ses||classid), data=class_df)
+M15b <- lmer(mathscore ~ ses + (ses|schoolid) + (1|classid), data=class_df)
+
+library(brms)
+
+M16 <- brm(mathscore ~ ses + (ses|schoolid) + (ses|classid), 
+           cores = 4,
+           data=class_df)
+
+M17 <- brm(mathscore ~ ses, 
+           cores = 4,
+           data=class_df)
+
+loo(M16)
+loo(M17)
+
+waic(M16)
+waic(M17)
